@@ -170,6 +170,7 @@ exports.recoverPassword = function (req, res, next) {
 			if (parsed_body.success){
 				done(null);
 			} else {
+				console.log('invalid captcha')
 				done({custom_code: 400});
 			}
 		});
@@ -179,9 +180,11 @@ exports.recoverPassword = function (req, res, next) {
 		User.findOne({ email: { $in: [ s_email ] } }).exec(function(err, user) {
 			if (err) {
 				done(err);
-			} else if (!err && !user) {
-				done({custom_code: 422, custom_message: 'No user found'});
-			} else {
+			} 
+			else if (!err && !user) {
+				done({custom_code: 200, custom_message: 'Success'});
+			} 
+			else {
 				if (user.reset_password_expires && user.reset_password_expires > Date.now()) {
 					done({custom_code: 422, custom_message: 'Request already made'});
 				} else {
@@ -209,7 +212,7 @@ exports.recoverPassword = function (req, res, next) {
 	}
 
 	function _sendEmail(token, user, done){
-		let serviceUrl = config.serviceUrl;
+		let service_url = config.service_url;
 		let port = process.env.PORT || '3000';
 		let data = {
 			to: user.email,
@@ -217,7 +220,7 @@ exports.recoverPassword = function (req, res, next) {
 			template: 'forgot-password-email',
 			subject: 'SolidBits - Solicitação de alteração de senha',
 			context: {
-				url: `https://${serviceUrl}:${port}/auth/resetar-senha?token=${token}`,
+				url: `https://${service_url}:${port}/reset-password?token=${token}`,
 				name: user.name.split(' ')[0]
 			}
 		};
@@ -260,7 +263,7 @@ exports.resetPassword = function(req, res, next) {
 	}
 
 	function _checkRequestBody(done) {
-		if (!req.body.password || !req.body.verifyPassword || req.body.password !== req.body.verifyPassword ||!regexes.password_regex.test(req.body.password)) {
+		if (!req.body.password || !req.body.password_r || req.body.password !== req.body.password_r || !regexes.password_regex.test(req.body.password)) {
 			done({custom_code: 400});
 		} else {
 			done(null);
