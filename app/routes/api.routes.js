@@ -11,6 +11,11 @@ const requireLogin = passport.authenticate('local', {session: false});
 // auth routes
 router.post('/auth/login', requireLogin, authController.login);
 router.post('/auth/register', authController.register);
+router.post('/auth/recover-password', authController.recoverPassword);
+router.get('/auth/reset-password', authController.resetPassword);
+router.post('/auth/reset-password', authController.resetPassword);
+// to avoid search three times, the auth is done inside the logout route
+router.post('/auth/logout', authController.logout);
 router.get('/auth/protected', requireAuth, function(req, res) {
   res.send({content: 'Success'});
 });
