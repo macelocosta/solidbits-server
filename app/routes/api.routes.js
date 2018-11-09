@@ -2,6 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const passportSvc = require('./../config/passport');
 const authController = require ('./../controllers/auth.controller');
+const dataController = require('./../controllers/data.controller');
 
 const router = express.Router();
 
@@ -19,6 +20,11 @@ router.post('/auth/logout', authController.logout);
 router.get('/auth/protected', requireAuth, function(req, res) {
   res.send({content: 'Success'});
 });
+
+// data routes
+router.post('/data/input', requireAuth, dataController.dataInput);
+router.get('/data/overview/monitoring', dataController.getOverviewMonitoring);
+router.get('/biggest-waste-producers', dataController.getBiggestWasteProducers);
 
 // todoRoutes.get('/', requireAuth, AuthenticationController.roleAuthorization(['reader','creator','editor']), TodoController.getTodos);
 // todoRoutes.post('/', requireAuth, AuthenticationController.roleAuthorization(['creator','editor']), TodoController.createTodo);
