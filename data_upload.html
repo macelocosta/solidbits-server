@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Data upload</title>
+    <!-- <link rel="stylesheet" href="style.css" type="text/css" /> -->
+    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.6.1.min.js">
+</script>
+    <script type="text/javascript">
+      let total, count = 0;
+      $(document).ready(function() {
+        $.getJSON("../backups_thingspeak/2018-10-10_15_18.json", function(json) {
+          total = json.length;
+          for (let i = 0; i < total; i++) {
+            let record = {
+              clientId: '5a8980d5cd7c4512705428f3',
+              payload: {
+                temperature: json[i].field2,
+                humidity: json[i].field1,
+                fill: json[i].field3,
+                volume: json[i].field4,
+                weight: json[i].field5,
+                isLidEvent: json[i].field6 == '' ? false : true,
+                lidOpenedDuration: parseFloat(json[i].field7) == NaN ? parseFloat(json[i].field7) : undefined,
+                isLidOpened: json[i].field8 == '' ? false : true
+              },
+              created: json[i].created_at
+            }
+            Object.keys(record.payload).forEach(key => record.payload[key] === undefined || 'n' ? delete record.payload[key] : '');
+            // console.log(record);
+            // sendData(record);
+          }
+        })
+      });
+
+      function sendData(data) {
+        $.ajax({
+          type: "POST",
+          url: "http://127.0.0.1:3000/api/data/input",
+          contentType: "application/json",
+          dataType: 'json',
+          data: JSON.stringify(data),
+          success: function(msg) {
+            count++;
+            console.log(`${count} of ${total} done`);
+          },
+          error: function() {
+            console.log("ERROR");
+          }
+        });
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

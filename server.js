@@ -33,8 +33,15 @@ app.use(body_parser.urlencoded({ extended: false }));
 let server = http.createServer(app);
 server.listen(port, () => console.log(`[HTTP Server] Running on port ${port}`));
 
-// http head security improvements - helmet
+// http header security improvements - helmet
 app.use(helmet());
+// app.use(helmet.contentSecurityPolicy({
+//   directives: {
+//     defaultSrc: ["'self'"],
+//     scriptSrc: ["'self'", 'https://www.google.com/recaptcha/', 'https://www.gstatic.com/recaptcha/'],
+//     frameSrc: ["'self'", 'https://www.google.com/recaptcha/']
+//   }
+// }))
 
 // deal Cross Origin Resource Sharing (CORS) issues we might run into
 app.use(cors());
@@ -72,7 +79,12 @@ app.get('*', (req, res) => {
 
 // Mongoose settings
 let mongoose_connection_options = {
-  autoIndex: false, auto_reconnect:true, useNewUrlParser: true
+  autoIndex: false,
+  auto_reconnect:true,
+  useNewUrlParser: true,
+  connectTimeoutMS: 360000,
+  socketTimeoutMS: 900000,
+  reconnectInterval: 5000
 }
 
 mongoose.connect(config.database_url, mongoose_connection_options);
