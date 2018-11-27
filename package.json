@@ -17,6 +17,7 @@
     "cors": "^2.8.4",
     "express": "^4.16.4",
     "helmet": "^3.14.0",
+    "influx": "^5.0.7",
     "jsonwebtoken": "^8.3.0",
     "mongo-sanitize": "^1.0.0",
     "mongoose": "^5.3.6",

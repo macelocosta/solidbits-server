@@ -1,4 +1,5 @@
 exports.answerWithError = function(err, req, res) {
+  console.log(err);
   if (err.custom_message) {
     console.log("[ErrorHandler] Sent message: ", err);
   }

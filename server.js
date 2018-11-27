@@ -1,18 +1,18 @@
-let http = require('http');
-let https = require('https');
-let fs = require('fs');
-let express = require('express');
-let cors = require('cors');
-let path = require('path');
-let body_parser = require('body-parser');
-let helmet = require('helmet');
-let serve_static = require('serve-static');
-let mongoose = require('mongoose');
-let mosca = require('mosca');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const body_parser = require('body-parser');
+const helmet = require('helmet');
+const serve_static = require('serve-static');
+const mongoose = require('mongoose');
+const mosca = require('mosca');
 
-let config = require('./app/config/config');
-let api_routes = require('./app/routes/api.routes');
-let mosca_routes = require('./app/routes/mosca.routes');
+const config = require('./app/config/config');
+const api_routes = require('./app/routes/api.routes');
+const mosca_routes = require('./app/routes/mosca.routes');
 let app = express();
 
 let production = process.env.NODE_ENV === 'production'
@@ -63,7 +63,7 @@ if (!production) {
     })
   });
 
-  console.log('[Chokidar / Reload] Watching for changes')
+  console.log('[Chokidar / Reload] Watching for changes');
 }
 
 // point static path to public
