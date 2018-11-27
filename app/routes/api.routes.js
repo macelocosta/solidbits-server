@@ -22,8 +22,11 @@ router.get('/auth/protected', requireAuth, function(req, res) {
 });
 
 // data routes
-router.post('/data/input', requireAuth, dataController.dataInput);
+router.post('/data/input', dataController.dataInput);
 router.get('/data/overview/monitoring', dataController.getOverviewMonitoring);
+router.get('/data/overview/current-weight', dataController.getCurrentWeight);
+router.get('/data/overview/current-volume', dataController.getCurrentVolume);
+router.get('/data/overview/bins-by-fill-level', dataController.getBinsByFillLevel);
 router.get('/biggest-waste-producers', dataController.getBiggestWasteProducers);
 
 // todoRoutes.get('/', requireAuth, AuthenticationController.roleAuthorization(['reader','creator','editor']), TodoController.getTodos);
