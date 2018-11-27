@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt-nodejs');
 
 var UserSchema = new mongoose.Schema({
   name: {
@@ -34,7 +34,6 @@ var UserSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// hasheia a senha antes de salvar no bd
 UserSchema.pre('save', function(next){
   var user = this;
   var salt_factor = 10;
