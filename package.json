@@ -11,7 +11,7 @@
   "author": "Macelo Costa",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "chokidar": "^2.0.4",
     "cors": "^2.8.4",
