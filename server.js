@@ -18,7 +18,7 @@ let app = express();
 let production = process.env.NODE_ENV === 'production'
 
 // get port from environment and store in Express
-let port = process.env.PORT || '3000';
+let port = process.env.PORT || '80';
 app.set('port', port);
 
 // parsers for POST data
