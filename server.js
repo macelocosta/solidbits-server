@@ -1,4 +1,4 @@
-const http = require('http');
+// const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
@@ -26,11 +26,11 @@ app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: false }));
 
 // create HTTPS server
-// let server = https.createServer({
-//   key: fs.readFileSync('./app/certificates/server.key'),
-//   cert: fs.readFileSync('./app/certificates/server.cert')
-// }, app);
-let server = http.createServer(app);
+let server = https.createServer({
+  key: fs.readFileSync('./app/certificates/server.key'),
+  cert: fs.readFileSync('./app/certificates/server.cert')
+}, app);
+// let server = http.createServer(app);
 server.listen(port, () => console.log(`[HTTP Server] Running on port ${port}`));
 
 // http header security improvements - helmet
