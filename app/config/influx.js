@@ -26,8 +26,8 @@ module.exports = function() {
 
   influx.getDatabaseNames()
   .then(names => {
-    console.log("InfluxDB connection estabilished");
     if (!names.includes(database_name)) {
+      console.log("InfluxDB connection estabilished");
       let db = influx.createDatabase(database_name);
       influx.createRetentionPolicy('solidbits', {duration: 'inf', replication: 1, database: database_name, isDefault: 1});
       return db;
