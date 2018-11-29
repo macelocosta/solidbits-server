@@ -22,10 +22,12 @@ app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: false }));
 
 http.createServer(app).listen(80);
+console.log("[HTTP Server] Listening on port 80");
 https.createServer({
   key: fs.readFileSync('./app/certificates/server.key'),
   cert: fs.readFileSync('./app/certificates/server.cert')
 }, app).listen(443);
+console.log("[HTTPS Server] Listening on port 443");
 
 app.all('*', ensureSecure);
 
