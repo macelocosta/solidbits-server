@@ -16,22 +16,26 @@ function queryStringToJSON(queryString) {
 }
 
 exports.salvarMensagem = function(packet) {
-  let _payload = queryStringToJSON(packet.payload.toString());
-  let message = {
-    clientId: packet.topic.substring(packet.topic.indexOf("/") + 1),
-    messageId: packet.messageId,
-    payload: {
-      temperature: _payload.temp,
-      humidity: _payload.hum,
-      fill: _payload.fill,
-      vol: _payload.vol,
-      weight: _payload.weight,
-      isLidEvent: _payload.isLidEvt,
-      lidOpenedDuration: _payload.s,
-      isLidOpened: _payload.lidOpn
-    }
-  };
-  dataController.saveMQTTMessage(message);
+  try {
+    let _payload = queryStringToJSON(packet.payload.toString());
+    let message = {
+      clientId: packet.topic.substring(packet.topic.indexOf("/") + 1),
+      messageId: packet.messageId,
+      payload: {
+        temperature: _payload.temp,
+        humidity: _payload.hum,
+        fill: _payload.fill,
+        vol: _payload.vol,
+        weight: _payload.weight,
+        isLidEvent: _payload.isLidEvt,
+        lidOpenedDuration: _payload.s,
+        isLidOpened: _payload.lidOpn
+      }
+    };
+    dataController.saveMQTTMessage(message);
+  } catch (error) {
+    console.log(error);
+  }
   // let message = new MQTTMessage({
   //   clientId: packet.topic.substring(packet.topic.indexOf("/") + 1),
   //   messageId: packet.messageId,

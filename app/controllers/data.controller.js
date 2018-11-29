@@ -4,34 +4,38 @@ const influx = require('./../config/influx');
 let influx_ = influx();
 
 exports.dataInput = function(req, res) {
-  let data = req.body;
-  influx_.writePoints([
-    {
-      measurement: 'bin',
-      tags: {
-        bin_id: data.clientId
-      },
-      fields: {
-        temperature: data.payload.temperature,
-        humidity: data.payload.humidity,
-        fill: data.payload.fill,
-        volume: data.payload.volume,
-        weight: data.payload.weight,
-        isLidEvent: data.payload.isLidEvent,
-        isLidOpened: data.payload.isLidOpened,
-        lidOpenedDuration: data.payload.lidOpenedDuration
-      },
-      timestamp: data.created
-    }
-  ], {
-    database: 'solidbits',
-    precision: 's'
-  }).then(result => {
-    res.status(200).json({message: 'ok'});
-  }).catch(error => {
-    console.error(`Error saving data to InfluxDB! ${error.stack}`)
-    res.status(500).json({message: 'error'});
-  });
+  try {
+    let data = req.body;
+    influx_.writePoints([
+      {
+        measurement: 'bin',
+        tags: {
+          bin_id: data.clientId
+        },
+        fields: {
+          temperature: data.payload.temperature,
+          humidity: data.payload.humidity,
+          fill: data.payload.fill,
+          volume: data.payload.volume,
+          weight: data.payload.weight,
+          isLidEvent: data.payload.isLidEvent,
+          isLidOpened: data.payload.isLidOpened,
+          lidOpenedDuration: data.payload.lidOpenedDuration
+        },
+        timestamp: data.created
+      }
+    ], {
+      database: 'solidbits',
+      precision: 's'
+    }).then(result => {
+      res.status(200).json({message: 'ok'});
+    }).catch(error => {
+      console.error(`Error saving data to InfluxDB! ${error.stack}`)
+      res.status(500).json({message: 'error'});
+    });
+  } catch (error) {
+    console.log(error);
+  }
   // let message = new MQTTMessage(data);
   // message.save(function(err, record) {
   //   if (err) {

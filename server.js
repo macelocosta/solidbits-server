@@ -1,4 +1,4 @@
-// const http = require('http');
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
@@ -17,21 +17,26 @@ let app = express();
 
 let production = process.env.NODE_ENV === 'production'
 
-// get port from environment and store in Express
-let port = process.env.PORT || '80';
-app.set('port', port);
-
 // parsers for POST data
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: false }));
 
-// create HTTPS server
-let server = https.createServer({
+http.createServer(app).listen(80);
+https.createServer({
   key: fs.readFileSync('./app/certificates/server.key'),
   cert: fs.readFileSync('./app/certificates/server.cert')
-}, app);
-// let server = http.createServer(app);
-server.listen(port, () => console.log(`[HTTP Server] Running on port ${port}`));
+}, app).listen(443);
+
+app.all('*', ensureSecure);
+
+function ensureSecure(req, res, next){
+  if(req.secure){
+    return next();
+  };
+  // handle port numbers if you need non defaults
+  // res.redirect('https://' + req.host + req.url); // express 3.x
+  res.redirect('https://' + req.hostname + req.url); // express 4.x
+}
 
 // http header security improvements - helmet
 app.use(helmet());
