@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const serve_static = require('serve-static');
 const mongoose = require('mongoose');
 const mosca = require('mosca');
+const morgan = require('morgan');
 
 const config = require('./app/config/config');
 const api_routes = require('./app/routes/api.routes');
@@ -36,7 +37,6 @@ function ensureSecure(req, res, next){
     return next();
   };
   // handle port numbers if you need non defaults
-  // res.redirect('https://' + req.host + req.url); // express 3.x
   res.redirect('https://' + req.hostname + req.url); // express 4.x
 }
 
@@ -54,7 +54,7 @@ app.use(helmet());
 app.use(cors());
 
 // log requests using Morgan
-// app.use(morgan('dev'));
+app.use(morgan('tiny'));
 
 // chokidar/reload config for live-reload on changes if not in production
 if (!production) {
@@ -102,15 +102,16 @@ mongoose.connection.on('connected', function(){
 
 mongoose.connection.on('disconnected', function(){
   console.log(`[Mongoose] Disconnected from ${config.database_url}`);
-  mongoose.connect(config.database_url, mongoose_connection_options);
+  // mongoose.connect(config.database_url, mongoose_connection_options);
 });
 
 mongoose.connection.on('error', function(error){
   console.log('[Mongoose] Erro na conexão: ' + error);
-  mongoose.connect(config.database_url, mongoose_connection_options);
+  // mongoose.connect(config.database_url, mongoose_connection_options);
 });
 
 mongoose.set('debug', true);
+mongoose.set('useFindAndModify', false);
 
 //Mosca settings
 let mosca_server = new mosca.Server({port:config.mqtt_port});
