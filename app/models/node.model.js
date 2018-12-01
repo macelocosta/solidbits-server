@@ -7,23 +7,25 @@ module.exports = function() {
       required: true,
       min: 4
     },
-    abbrev:{
+    type:{
       type: String,
-      required: false,
-      min: 2
+      required: true,
+      min: 4
     },
-    location:{
-      type: String,
-      required: false,
-      min: 2
+    status:{
+      type: Number,
+      required: true,
     },
-    children:{
+    parent: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Node',
-      required: false
-    }
+      ref: 'Node'
+    },
+    children: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Node'
+    }]
   }, {
     timestamps: { createdAt: 'created', updatedAt: 'updated' }
   });
-  return mongoose.model('Business', schema);
+  return mongoose.model('Node', schema);
 }();

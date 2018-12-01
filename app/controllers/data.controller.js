@@ -69,7 +69,8 @@ exports.saveMQTTMessage = function(data) {
     database: 'solidbits',
     precision: 's'
   }).then(result => {
-    console.log("Stored message from client ", data.clientId);
+    let date = new Date();
+    console.log(`[Mosca] Stored message from client ${data.clientId} at ${date}`);
   }).catch(error => {
     console.log(error);
   });
