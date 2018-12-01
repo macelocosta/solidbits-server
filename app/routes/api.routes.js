@@ -23,7 +23,7 @@ router.get('/auth/protected', requireAuth, function(req, res) {
 });
 
 // data routes
-router.post('/data/input', dataController.dataInput);
+router.post('/data/input', requireAuth, dataController.dataInput);
 router.get('/data/overview/monitoring', dataController.getOverviewMonitoring);
 router.get('/data/overview/current-weight', dataController.getCurrentWeight);
 router.get('/data/overview/current-volume', dataController.getCurrentVolume);
@@ -32,7 +32,7 @@ router.get('/data/biggest-waste-producers', dataController.getBiggestWasteProduc
 
 //business route
 router.get('/business', businessController.getBusiness);
-router.post('/business', businessController.updateBusiness);
+router.post('/business', requireAuth, businessController.updateBusiness);
 
 // TODO: colocar os requireAuth!!!
 // TODO: colocar os requireAuth!!!
