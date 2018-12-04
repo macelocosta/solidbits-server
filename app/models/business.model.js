@@ -17,11 +17,19 @@ module.exports = function() {
       required: false,
       min: 2
     },
-    children:{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Node',
-      required: false
-    }
+    floors:[
+      {
+        name: {
+          type: String,
+          required: true
+        },
+        filename: {
+          type: String,
+          required: true
+        }
+      }
+    ],
+    children: []
   }, {
     timestamps: { createdAt: 'created', updatedAt: 'updated' }
   });

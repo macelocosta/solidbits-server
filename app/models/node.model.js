@@ -1,5 +1,11 @@
 var mongoose = require('mongoose');
 
+mPathOptions = {
+  pathSeparator: '#',
+  onDelete: 'REPARENT',
+  idType: mongoose.Schema.ObjectId
+}
+
 module.exports = function() {
   var schema = mongoose.Schema({
     name:{
@@ -14,18 +20,15 @@ module.exports = function() {
     },
     status:{
       type: Number,
-      required: true,
+      required: false,
     },
-    parent: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Node'
-    },
-    children: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Node'
-    }]
+    location:{
+      type:String,
+      required: false
+    }
   }, {
     timestamps: { createdAt: 'created', updatedAt: 'updated' }
   });
+
   return mongoose.model('Node', schema);
 }();
