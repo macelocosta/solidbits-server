@@ -1,4 +1,5 @@
 const Business = require('./../models/business.model');
+const Node = require('./../models/node.model');
 const errorHandler = require('./../controllers/error-handler.controller');
 
 exports.getBusiness = function(req, res) {
@@ -25,7 +26,7 @@ exports.updateBusiness = function(req, res) {
         if (result.length > 0) {
           try {
             result = result[0];
-            Business.findOneAndUpdate({_id:result._id}, {$set:{name:req.body.name, abbrev:req.body.abbrev, location:req.body.location}}, function(err, result) {
+            Business.findOneAndUpdate({_id:result._id}, {$set:{name:req.body.name, abbrev:req.body.abbrev, location:req.body.location, children:req.body.children}}, function(err, result) {
               if (err) {
                 errorHandler.answerWithError(err, req, res);
               } else {
@@ -59,3 +60,19 @@ exports.updateBusiness = function(req, res) {
     throw err;
   }
 }
+
+// exports.addArea = function(req, res) {
+//   Business.find({}).lean().exec(function(err, result) {
+//     if (err) {
+//       errorHandler.answerWithError(err, req, res);
+//     } else {
+//       let business = result;
+//       let node = new Node({
+//         name: req.body.name,
+//         type: 'space',
+//         parent: business
+//       });
+//       node.save();
+//     }
+//   });
+// }

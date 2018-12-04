@@ -1,9 +1,11 @@
 const express = require('express');
 const passport = require('passport');
 const passportSvc = require('./../config/passport');
+
 const authController = require ('./../controllers/auth.controller');
 const dataController = require('./../controllers/data.controller');
 const businessController = require('./../controllers/business.controller');
+const fileController = require('./../controllers/file.controller');
 
 const router = express.Router();
 
@@ -30,9 +32,14 @@ router.get('/data/overview/current-volume', dataController.getCurrentVolume);
 router.get('/data/overview/bins-by-fill-level', dataController.getBinsByFillLevel);
 router.get('/data/biggest-waste-producers', dataController.getBiggestWasteProducers);
 
-//business route
+// business route
 router.get('/business', businessController.getBusiness);
 router.post('/business', requireAuth, businessController.updateBusiness);
+// router.post('/business/area', requireAuth, businessController.addArea);
+
+// file routes
+router.post('/upload-floor', requireAuth, fileController.saveFile);
+router.get('/data/floor-urls', requireAuth, fileController.getFloors);
 
 // TODO: colocar os requireAuth!!!
 // TODO: colocar os requireAuth!!!

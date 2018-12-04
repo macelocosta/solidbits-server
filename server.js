@@ -76,6 +76,9 @@ if (!production) {
 // point static path to public
 app.use(serve_static(path.join(__dirname, 'app/public')));
 
+app.use('/static', express.static('/solidbits-data/'));
+
+
 // set API routes
 app.use('/api', api_routes);
 
