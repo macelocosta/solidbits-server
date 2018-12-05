@@ -6,6 +6,7 @@ const authController = require ('./../controllers/auth.controller');
 const dataController = require('./../controllers/data.controller');
 const businessController = require('./../controllers/business.controller');
 const fileController = require('./../controllers/file.controller');
+const nodeController = require('./../controllers/node.controller');
 
 const router = express.Router();
 
@@ -36,6 +37,9 @@ router.get('/data/biggest-waste-producers', dataController.getBiggestWasteProduc
 router.get('/business', businessController.getBusiness);
 router.post('/business', requireAuth, businessController.updateBusiness);
 // router.post('/business/area', requireAuth, businessController.addArea);
+
+// node routes
+router.post('/node/pre-add-bin', requireAuth, nodeController.preAddNode);
 
 // file routes
 router.post('/upload-floor', requireAuth, fileController.saveFile);

@@ -1,5 +1,5 @@
-const http = require('http');
-const https = require('https');
+// const http = require('http');
+// const https = require('https');
 const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
@@ -15,6 +15,9 @@ const config = require('./app/config/config');
 const api_routes = require('./app/routes/api.routes');
 const mosca_routes = require('./app/routes/mosca.routes');
 let app = express();
+let http_server = require('http').createServer(app);
+http_server.listen(80);
+console.log("[HTTP Server] Listening on port 80");
 
 let production = process.env.NODE_ENV === 'production'
 
@@ -22,13 +25,15 @@ let production = process.env.NODE_ENV === 'production'
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({ extended: false }));
 
-http.createServer(app).listen(80);
-console.log("[HTTP Server] Listening on port 80");
-https.createServer({
+let https_server = require('https').createServer({
   key: fs.readFileSync('./app/certificates/server.key'),
   cert: fs.readFileSync('./app/certificates/server.cert')
-}, app).listen(443);
+}, app);
+https_server.listen(443);
 console.log("[HTTPS Server] Listening on port 443");
+
+const socketController = require('./app/controllers/socket.controller');
+socketController.initIO(https_server);
 
 app.all('*', ensureSecure);
 
@@ -57,21 +62,21 @@ app.use(cors());
 app.use(morgan('tiny'));
 
 // chokidar/reload config for live-reload on changes if not in production
-if (!production) {
-  let chokidar = require('chokidar');
+// if (!production) {
+//   let chokidar = require('chokidar');
 
-  let watcher = chokidar.watch('./app');
-  watcher.on('ready', function() {
-    watcher.on('all', function() {
-      console.log("[Chokidar] Clearing cache")
-      Object.keys(require.cache).forEach(function(id) {
-        if (/[\/\\]app[\/\\]/.test(id)) delete require.cache[id]
-      })
-    })
-  });
+//   let watcher = chokidar.watch('./app');
+//   watcher.on('ready', function() {
+//     watcher.on('all', function() {
+//       console.log("[Chokidar] Clearing cache")
+//       Object.keys(require.cache).forEach(function(id) {
+//         if (/[\/\\]app[\/\\]/.test(id)) delete require.cache[id]
+//       })
+//     })
+//   });
 
-  console.log('[Chokidar / Reload] Watching for changes');
-}
+//   console.log('[Chokidar / Reload] Watching for changes');
+// }
 
 // point static path to public
 app.use(serve_static(path.join(__dirname, 'app/public')));
@@ -83,7 +88,7 @@ app.use('/static', express.static('/solidbits-data/'));
 app.use('/api', api_routes);
 
 // catch all other routes and return the index file
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'app/public/index.html'));
 });
 

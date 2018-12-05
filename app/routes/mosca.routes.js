@@ -25,7 +25,7 @@ exports.salvarMensagem = function(packet) {
         temperature: _payload.temp,
         humidity: _payload.hum,
         fill: _payload.fill,
-        vol: _payload.vol,
+        volume: _payload.vol,
         weight: _payload.weight,
         isLidEvent: _payload.isLidEvt,
         lidOpenedDuration: _payload.s,
