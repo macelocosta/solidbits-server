@@ -3,16 +3,22 @@ let influx_ = influx();
 const Business = require('./../models/business.model');
 
 let io;
+let data;
 
 exports.initIO = function(https_server) {
   io = require('socket.io').listen(https_server);
   console.log('[Socket] listening...');
-
+  
   setInterval(() => {
     weightAndVolume();
     binsByFillLevel();
     filledBinsPerArea();
+    mapData();
   }, 30000);
+
+  setInterval(() => {
+    network();
+  }, 5000);
 
   io.on('connection', function(client){
     console.log('[Socket] an user connected');
@@ -23,6 +29,7 @@ exports.initIO = function(https_server) {
       filledBinsPerArea();
       biggestWasteProducers();
       mapData();
+      overviewMonitoring();
     });
 
     client.on('bins-by-fill-level', function(){
@@ -36,6 +43,19 @@ exports.initIO = function(https_server) {
     client.on('map-data', function(){
       mapData();
     });
+
+    client.on('network', function(){
+      network();
+    });
+
+    client.on('overview-current-usage', function() {
+      currentUsage();
+    });
+
+    client.on('overview-monitoring', function(data){
+      this.data = data;
+      overviewMonitoring();
+    })
   });
 
   let weightAndVolume = function() {
@@ -139,5 +159,45 @@ exports.initIO = function(https_server) {
         });
       }
     })
+  }
+
+  let network = function() {
+    Business.find({}).lean().exec(function(err, result) {
+      if (result) {
+        delete result[0].floors;
+        delete result[0].created;
+        delete result[0].abbrev;
+        delete result[0].location;
+        delete result[0].__v;
+        let children = result[0];
+        let status;
+        influx_.query(`SELECT mean("weight") AS "weight" FROM "solidbits"."solidbits"."bin" WHERE time > now() - 2m`).then(result => {
+          if (result[0].weight) {
+            if (result[0].weight != null) {
+              status = 1;
+            } else {
+              status = 0;
+            }
+          }
+        });
+        io.emit('network', {children: children, status:status});
+      }
+    })
+  }
+
+  let currentUsage = function() {
+    influx_.query(`SELECT mean("fill") AS "fill" FROM "solidbits"."solidbits"."bin" WHERE time > now() - 1m`).then(result => {
+      io.emit('overview-current-usage', result[0]);
+    });
+  }
+
+  let overviewMonitoring = function() {
+    if (data) {
+      influx_.query(`SELECT mean("fill") AS "fill" FROM "solidbits"."solidbits"."bin" WHERE time > now() - ${data.time} GROUP BY time(${data.interval}) FILL(linear)`).then(result => {
+        io.emit('overview-monitoring', {json:result});
+      }).catch(e => {
+        errorHandler.answerWithError(e, req, res);
+      });
+    }
   }
 }
