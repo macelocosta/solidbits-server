@@ -4,7 +4,7 @@ let database_name = 'solidbits';
 
 module.exports = function() {
   const influx = new Influx.InfluxDB({
-    host: '192.168.191.239',
+    host: 'localhost',
     database: database_name,
     schema: [
       {
