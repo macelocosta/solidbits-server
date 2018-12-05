@@ -14,11 +14,9 @@ exports.initIO = function(https_server) {
     binsByFillLevel();
     filledBinsPerArea();
     mapData();
-  }, 30000);
-
-  setInterval(() => {
+    currentUsage();
     network();
-  }, 5000);
+  }, 10000);
 
   io.on('connection', function(client){
     console.log('[Socket] an user connected');
@@ -30,6 +28,7 @@ exports.initIO = function(https_server) {
       biggestWasteProducers();
       mapData();
       overviewMonitoring();
+      currentUsage();
     });
 
     client.on('bins-by-fill-level', function(){
