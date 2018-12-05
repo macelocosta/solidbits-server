@@ -1,11 +1,5 @@
 var mongoose = require('mongoose');
 
-mPathOptions = {
-  pathSeparator: '#',
-  onDelete: 'REPARENT',
-  idType: mongoose.Schema.ObjectId
-}
-
 module.exports = function() {
   var schema = mongoose.Schema({
     name:{
@@ -22,8 +16,12 @@ module.exports = function() {
       type: Number,
       required: false,
     },
-    location:{
-      type:String,
+    coordinates:{
+      type: Object,
+      required: false
+    },
+    floor:{
+      type: Number,
       required: false
     }
   }, {
