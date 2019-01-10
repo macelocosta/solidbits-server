@@ -1,7 +1,12 @@
 const express = require('express');
 const passport = require('passport');
 const passportSvc = require('./../config/passport');
+
 const authController = require ('./../controllers/auth.controller');
+const dataController = require('./../controllers/data.controller');
+const businessController = require('./../controllers/business.controller');
+const fileController = require('./../controllers/file.controller');
+const nodeController = require('./../controllers/node.controller');
 
 const router = express.Router();
 
@@ -19,6 +24,30 @@ router.post('/auth/logout', authController.logout);
 router.get('/auth/protected', requireAuth, function(req, res) {
   res.send({content: 'Success'});
 });
+
+// data routes
+router.post('/data/input', requireAuth, dataController.dataInput);
+router.get('/data/overview/monitoring', dataController.getOverviewMonitoring);
+router.get('/data/overview/current-weight', dataController.getCurrentWeight);
+router.get('/data/overview/current-volume', dataController.getCurrentVolume);
+router.get('/data/overview/bins-by-fill-level', dataController.getBinsByFillLevel);
+router.get('/data/biggest-waste-producers', dataController.getBiggestWasteProducers);
+
+// business route
+router.get('/business', businessController.getBusiness);
+router.post('/business', requireAuth, businessController.updateBusiness);
+// router.post('/business/area', requireAuth, businessController.addArea);
+
+// node routes
+router.post('/node/pre-add-bin', requireAuth, nodeController.preAddNode);
+
+// file routes
+router.post('/upload-floor', requireAuth, fileController.saveFile);
+router.get('/data/floor-urls', requireAuth, fileController.getFloors);
+
+// TODO: colocar os requireAuth!!!
+// TODO: colocar os requireAuth!!!
+// TODO: colocar os requireAuth!!!
 
 // todoRoutes.get('/', requireAuth, AuthenticationController.roleAuthorization(['reader','creator','editor']), TodoController.getTodos);
 // todoRoutes.post('/', requireAuth, AuthenticationController.roleAuthorization(['creator','editor']), TodoController.createTodo);
